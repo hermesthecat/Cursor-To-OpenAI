@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
@@ -14,4 +16,5 @@ app.use("/", routes)
 
 app.listen(config.port, () => {
     console.log(`The server listens port: ${config.port}`);
+    console.log(`The server is running on http://localhost:${config.port}`);
 });
