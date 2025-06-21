@@ -55,6 +55,10 @@ We provide an API to save you from manual login. You need to log in to your Curs
     - Authentication：`Bearer Token`（The value of `WorkosCursorSessionToken` from Cursor webpage)
     - Response: In JSON, the value of `accessToken` is the `Cursor Cookie` in JWT format. That's what you want.
 
+2. Screenshot
+
+![models](models.png)
+
 Sample request:
 
 ```python
