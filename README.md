@@ -249,22 +249,7 @@ npm run service:uninstall:windows  # Uninstall Windows service
 
 ### Environment Variables
 
-Create a `.env` file in the project root:
-
-```bash
-# Required
-CURSOR_TOKEN=your_cursor_token_here
-
-# Optional
-PORT=3010
-NODE_ENV=production
-CURSOR_HOST=api2.cursor.sh
-CURSOR_X_CURSOR_TIMEZONE=Europe/Istanbul
-```
-
-### Advanced Configuration
-
-See `src/config/config.js` for all available configuration options.
+Rename `.env.example` to `.env` and fill in the values.
 
 ## 🐛 Troubleshooting
 
