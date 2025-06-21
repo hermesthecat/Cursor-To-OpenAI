@@ -1,6 +1,6 @@
 {
   "name": "cursor-to-openai",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Cursor to OpenAPI",
   "author": "Kerem Gok",
   "private": false,
