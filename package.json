@@ -22,7 +22,9 @@
     "start": "nodemon src/app.js",
     "start:script": "bash scripts/start.sh",
     "start:windows": "scripts\\start.bat",
-    "dev": "npm start"
+    "dev": "npm start",
+    "service:install": "sudo bash scripts/service_install.sh",
+    "service:uninstall": "sudo bash scripts/service_uninstall.sh"
   },
   "devDependencies": {
     "protobufjs-cli": "^1.1.3"
