@@ -10,132 +10,374 @@ This project provides a proxy service that converts the AI chat of the Cursor Ed
 
 Visit [Cursor](https://www.cursor.com) and register a account.
 
-### Get Cursor client cookie
+- 150 fast premium requests are given, which can be reset by deleting the account and then registering again
+- Suggest to use gmail/outlook email, some temp emails have been disabled by Cursor.
 
-The cookie from Cursor webpage does not work in Cursor-To-OpenAI server. You need to get the Cursor client cookie following these steps:
+## 🚀 Quick Start
 
-#### Method 1: Automatic Login (Recommended)
-
-1. Run `npm install` to initialize the environment.
-2. Run `npm run login`. Open the URL shown in the log, and then login your account.
-3. **The token will be automatically saved to your `.env` file** - no manual copying needed!
-4. If you need the token value for other purposes, it will also be displayed in the console.
-
-The log of this command looks like:
+### 1. Get Your Cursor Token (Automatic - Recommended)
 
 ```bash
-[Log] Please open the following URL in your browser to login:
-https://www.cursor.com/loginDeepControl?challenge=6aDBevuHkK-HLiZ<......>k2lEjbVRMpg&uuid=5147ac09<....>5fe5f3aeb&mode=login      <-- Copy the url and open it in your browser.
-[Log] Waiting for login... (1/60)
-[Log] Waiting for login... (2/60)
-[Log] Waiting for login... (3/60)
-[Log] Waiting for login... (4/60)
-[Log] Login successfully. Your Cursor cookie:
-user_01JJF<.....>K3F4T8%3A%3AeyJhbGciOiJIUzI1NiIsInR5cCI6Ikp<...................>AsCpbPfnlHy022WxmlKIt4Q7Ll0     <-- This is the Cursor cookie
-[Log] Added CURSOR_TOKEN to .env file                                                                                                                        <-- Token automatically saved!
+# Install dependencies
+npm install
+
+# Get your token automatically
+npm run login
 ```
 
-**Features:**
+This will:
 
-- ✅ Automatically saves token to `.env` file
-- ✅ Updates existing token if already present
-- ✅ Preserves other environment variables
+- ✅ Open a browser login page
+- ✅ Automatically save token to `.env` file
 - ✅ No manual copy-paste required
 
-#### Method 2: API-based Login
+### 2. Start the Server
 
-We provide an API to save you from manual login. You need to log in to your Cursor account in browser and get `WorkosCursorSessionToken` from Application-Cookie.
-
-1. Get Cursor client cookie
-    - Url：`http://localhost:3010/cursor/loginDeepContorl`
-    - Request：`GET`
-    - Authentication：`Bearer Token`（The value of `WorkosCursorSessionToken` from Cursor webpage)
-    - Response: In JSON, the value of `accessToken` is the `Cursor Cookie` in JWT format. That's what you want.
-
-2. Screenshot
-
-![models](models.png)
-
-Sample request:
-
-```python
-import requests
-
-WorkosCursorSessionToken = "{{{Replace by your WorkosCursorSessionToken from cookie in browser}}}}"
-response = requests.get("http://localhost:3010/cursor/loginDeepControl", headers={
-    "authorization": f"Bearer {WorkosCursorSessionToken}"
-})
-data = response.json()
-cookie = data["accessToken"]
-print(cookie)
-```
-
-## How to Run
-
-### Environment Setup
-
-After obtaining your Cursor cookie using Method 1 above, your `.env` file will be automatically created/updated with:
+Choose your preferred method:
 
 ```bash
-CURSOR_TOKEN=your_cursor_token_here
+# Option 1: Simple start
+npm start
+
+# Option 2: With startup script (Linux/Mac)
+npm run start:script
+
+# Option 3: With startup script (Windows)
+npm run start:windows
 ```
 
-You can also manually create a `.env` file in the project root with this format if needed.
+### 3. Test the API
 
-### Run in docker
+```bash
+curl http://localhost:3010/v1/models
+```
+
+## 📋 Deployment Options
+
+### 🖥️ Local Development
+
+```bash
+npm install
+npm run login        # Get token
+npm start           # Start server
+```
+
+### 🐳 Docker Deployment
+
+#### Quick Docker Run
+
+```bash
+# Linux/Mac
+npm run docker:run
+
+# Windows
+npm run docker:run:windows
+```
+
+#### Manual Docker Commands
+
+```bash
+# Build image
+docker build -t cursor-to-openai .
+
+# Run with .env file
+docker run -d --name cursor-to-openai -p 3010:3010 -v $(pwd)/.env:/app/.env cursor-to-openai
+```
+
+#### Docker Hub
 
 ```bash
 docker run -d --name cursor-to-openai -p 3010:3010 ghcr.io/jiuz-chn/cursor-to-openai:latest
 ```
 
-### Run in npm
+### 🔧 System Service Installation
+
+#### Linux (systemd)
 
 ```bash
-npm install
-npm run start
+# Install as system service
+sudo npm run service:install
+
+# Service management
+sudo systemctl start cursor-to-openai
+sudo systemctl stop cursor-to-openai
+sudo systemctl status cursor-to-openai
+
+# View logs
+sudo journalctl -u cursor-to-openai -f
+
+# Uninstall
+sudo npm run service:uninstall
 ```
 
-## How to use the server
+#### Windows (NSSM)
 
-1. Get models
-    - Url：`http://localhost:3010/v1/models`
-    - Request：`GET`
-    - Authentication：`Bearer Token`（The value of `Cursor Cookie`)
+```powershell
+# Install as Windows service (Run as Administrator)
+npm run service:install:windows
 
-2. Chat completion
-    - Url：`http://localhost:3010/v1/chat/completions`
-    - Request：`POST`
-    - Authentication：`Bearer Token`（The value of `Cursor Cookie`，supports comma-separated values）
+# Service management
+net start CursorToOpenAI
+net stop CursorToOpenAI
+Get-Service CursorToOpenAI
 
-For the response body, please refer to the OpenAI interface
+# View logs
+Get-Content logs\service.log -Tail 50 -Wait
 
-### Python demo
+# Uninstall
+npm run service:uninstall:windows
+```
+
+## 🔑 Authentication Methods
+
+### Method 1: Automatic Login (Recommended)
+
+1. Run `npm run login`
+2. Open the URL shown in the terminal
+3. Login with your Cursor account
+4. Token is automatically saved to `.env` file
+
+**Example output:**
+
+```bash
+[Log] Please open the following URL in your browser to login:
+https://www.cursor.com/loginDeepControl?challenge=...
+[Log] Waiting for login... (1/60)
+[Log] Login successfully. Your Cursor cookie:
+user_01JJF<...>
+[Log] Added CURSOR_TOKEN to .env file
+```
+
+### Method 2: API-based Login
+
+For advanced users who want to automate the process:
+
+```python
+import requests
+
+WorkosCursorSessionToken = "your_session_token_from_browser"
+response = requests.get("http://localhost:3010/cursor/loginDeepControl", headers={
+    "authorization": f"Bearer {WorkosCursorSessionToken}"
+})
+data = response.json()
+cursor_token = data["accessToken"]
+```
+
+## 📚 API Usage
+
+### Get Available Models
+
+```bash
+curl -H "Authorization: Bearer YOUR_CURSOR_TOKEN" \
+     http://localhost:3010/v1/models
+```
+
+### Chat Completions
+
+```bash
+curl -X POST http://localhost:3010/v1/chat/completions \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_CURSOR_TOKEN" \
+  -d '{
+    "model": "claude-3-7-sonnet",
+    "messages": [{"role": "user", "content": "Hello!"}]
+  }'
+```
+
+### Python Example
 
 ```python
 from openai import OpenAI
 
-client = OpenAI(api_key="{{{Replace by the Cursor cookie of your account. It starts with user_...}}}",
-                base_url="http://localhost:3010/v1")
+client = OpenAI(
+    api_key="YOUR_CURSOR_TOKEN",
+    base_url="http://localhost:3010/v1"
+)
 
 response = client.chat.completions.create(
     model="claude-3-7-sonnet",
-    messages=[
-        {"role": "user", "content": "Hello."},
-    ],
+    messages=[{"role": "user", "content": "Hello!"}],
     stream=False
 )
 
-print(response.choices)
+print(response.choices[0].message.content)
 ```
 
-## Notes
+## 🛠️ Available Scripts
 
-- Please keep your Cursor cookie properly and do not disclose it to others
-- This project is for study and research only, please abide by the Cursor Terms of Use
-- The login tool automatically manages your `.env` file for convenience
-- If you need to update your token, simply run `npm run login` again
+### Core Scripts
 
-## Acknowledgements
+```bash
+npm run login                    # Get Cursor token
+npm start                       # Start development server
+npm run dev                     # Same as start
+```
 
-- This project is based on [cursor-api](https://github.com/zhx47/cursor-api)(by zhx47).
-- This project integrates the commits in [cursor-api](https://github.com/lvguanjun/cursor-api)(by lvguanjun).
+### Startup Scripts
+
+```bash
+npm run start:script            # Linux/Mac startup script
+npm run start:windows           # Windows startup script
+```
+
+### Docker Scripts
+
+```bash
+# Linux/Mac
+npm run docker:build            # Build Docker image
+npm run docker:run              # Build and run container
+npm run docker:stop             # Stop container
+npm run docker:logs             # View container logs
+npm run docker:status           # Show container status
+npm run docker:cleanup          # Clean up containers and images
+
+# Windows
+npm run docker:build:windows    # Build Docker image
+npm run docker:run:windows      # Build and run container
+npm run docker:stop:windows     # Stop container
+npm run docker:logs:windows     # View container logs
+npm run docker:status:windows   # Show container status
+npm run docker:cleanup:windows  # Clean up containers and images
+```
+
+### Service Scripts
+
+```bash
+# Linux
+npm run service:install         # Install systemd service
+npm run service:uninstall       # Uninstall systemd service
+
+# Windows
+npm run service:install:windows    # Install Windows service
+npm run service:uninstall:windows  # Uninstall Windows service
+```
+
+## 🔧 Configuration
+
+### Environment Variables
+
+Create a `.env` file in the project root:
+
+```bash
+# Required
+CURSOR_TOKEN=your_cursor_token_here
+
+# Optional
+PORT=3010
+NODE_ENV=production
+CURSOR_HOST=api2.cursor.sh
+CURSOR_X_CURSOR_TIMEZONE=Europe/Istanbul
+```
+
+### Advanced Configuration
+
+See `src/config/config.js` for all available configuration options.
+
+## 🐛 Troubleshooting
+
+### Common Issues
+
+#### 1. "CURSOR_TOKEN not found"
+
+```bash
+# Solution: Run login command
+npm run login
+```
+
+#### 2. "Docker daemon not running"
+
+```bash
+# Solution: Start Docker Desktop
+# Windows: Start Docker Desktop application
+# Linux: sudo systemctl start docker
+```
+
+#### 3. "Permission denied" (Linux)
+
+```bash
+# Solution: Make scripts executable
+chmod +x scripts/*.sh
+```
+
+#### 4. "Module not found"
+
+```bash
+# Solution: Install dependencies
+npm install
+```
+
+### Logs and Debugging
+
+#### Development
+
+```bash
+npm start  # Logs to console
+```
+
+#### Docker
+
+```bash
+npm run docker:logs
+# or
+docker logs cursor-to-openai-container -f
+```
+
+#### System Service
+
+```bash
+# Linux
+sudo journalctl -u cursor-to-openai -f
+
+# Windows
+Get-Content logs\service.log -Tail 50 -Wait
+```
+
+## 📦 Project Structure
+
+```bash
+Cursor-To-OpenAI/
+├── src/
+│   ├── app.js              # Main application
+│   ├── config/             # Configuration files
+│   ├── routes/             # API routes
+│   ├── tool/               # Login utilities
+│   └── utils/              # Helper functions
+├── scripts/
+│   ├── start.sh            # Linux startup script
+│   ├── start.bat           # Windows startup script
+│   ├── docker_linux.sh     # Linux Docker script
+│   ├── docker_windows.bat  # Windows Docker script
+│   ├── service_install.sh  # Linux service installer
+│   ├── service_uninstall.sh # Linux service uninstaller
+│   ├── service_install.ps1 # Windows service installer
+│   └── service_uninstall.ps1 # Windows service uninstaller
+├── Dockerfile              # Docker configuration
+├── .dockerignore           # Docker ignore file
+├── package.json            # Dependencies and scripts
+└── README.md              # This file
+```
+
+## 🚨 Important Notes
+
+- **Security**: Keep your Cursor token secure and never share it publicly
+- **Terms of Service**: This project is for educational and research purposes only
+- **Rate Limits**: Respect Cursor's usage limits and terms of service
+- **Updates**: Tokens may expire - re-run `npm run login` if needed
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+## 🙏 Acknowledgements
+
+- This project is based on [cursor-api](https://github.com/zhx47/cursor-api) by zhx47
+- Integrates commits from [cursor-api](https://github.com/lvguanjun/cursor-api) by lvguanjun
+- Thanks to all contributors and the Cursor team
