@@ -1,11 +1,11 @@
 {
   "name": "cursor-to-openai",
-  "version": "2.5.1",
+  "version": "1.0.0",
   "description": "Cursor to OpenAPI",
-  "author": "JiuZ-Chn",
+  "author": "Kerem Gok",
   "private": false,
   "main": "index.js",
-  "url": "https://github.com/JiuZ-Chn/Cursor-To-OpenAI",
+  "url": "https://github.com/hermesthecat/Cursor-To-OpenAI",
   "license": "MIT",
   "dependencies": {
     "express": "4.21.2",

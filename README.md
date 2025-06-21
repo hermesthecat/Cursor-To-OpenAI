@@ -6,7 +6,7 @@ Convert the Cursor Editor to an OpenAI API interface service.
 
 This project provides a proxy service that converts the AI chat of the Cursor Editor into an OpenAPI API, allowing you to reuse the LLM of the Cursor in other applications.
 
-## Preparsuitue
+## Prerequisites
 
 Visit [Cursor](https://www.cursor.com) and register a account.
 
@@ -17,9 +17,12 @@ Visit [Cursor](https://www.cursor.com) and register a account.
 
 The cookie from Cursor webpage does not work in Cursor-To-OpenAI server. You need to get the Cursor client cookie following these steps:
 
-1. Run `npm install` to initialize the environment。
-2. Run `npm run login`. Open the URL shows in the log, and then login your account.
-3. The cookie shows in your command is the `Curosr Cookie` value. Copy and save it to your notepad.
+#### Method 1: Automatic Login (Recommended)
+
+1. Run `npm install` to initialize the environment.
+2. Run `npm run login`. Open the URL shown in the log, and then login your account.
+3. **The token will be automatically saved to your `.env` file** - no manual copying needed!
+4. If you need the token value for other purposes, it will also be displayed in the console.
 
 The log of this command looks like:
 
@@ -31,10 +34,18 @@ https://www.cursor.com/loginDeepControl?challenge=6aDBevuHkK-HLiZ<......>k2lEjbV
 [Log] Waiting for login... (3/60)
 [Log] Waiting for login... (4/60)
 [Log] Login successfully. Your Cursor cookie:
-user_01JJF<.....>K3F4T8%3A%3AeyJhbGciOiJIUzI1NiIsInR5cCI6Ikp<...................>AsCpbPfnlHy022WxmlKIt4Q7Ll0     <-- This is the Cursor cookie, please save it.
+user_01JJF<.....>K3F4T8%3A%3AeyJhbGciOiJIUzI1NiIsInR5cCI6Ikp<...................>AsCpbPfnlHy022WxmlKIt4Q7Ll0     <-- This is the Cursor cookie
+[Log] Added CURSOR_TOKEN to .env file                                                                                                                        <-- Token automatically saved!
 ```
 
-#### API to get Cursor client cookie
+**Features:**
+
+- ✅ Automatically saves token to `.env` file
+- ✅ Updates existing token if already present
+- ✅ Preserves other environment variables
+- ✅ No manual copy-paste required
+
+#### Method 2: API-based Login
 
 We provide an API to save you from manual login. You need to log in to your Cursor account in browser and get `WorkosCursorSessionToken` from Application-Cookie.
 
@@ -42,14 +53,14 @@ We provide an API to save you from manual login. You need to log in to your Curs
     - Url：`http://localhost:3010/cursor/loginDeepContorl`
     - Request：`GET`
     - Authentication：`Bearer Token`（The value of `WorkosCursorSessionToken` from Cursor webpage)
-    - Reponse: In JSON, the value of `accessToken` is the `Cursor Cookie` in JWT format. That's what you want.
+    - Response: In JSON, the value of `accessToken` is the `Cursor Cookie` in JWT format. That's what you want.
 
 Sample request:
 
 ```python
 import requests
 
-WorkosCursorSessionToken = "{{{Repalce by your WorkosCursorSessionToken from cookie in browser}}}}"
+WorkosCursorSessionToken = "{{{Replace by your WorkosCursorSessionToken from cookie in browser}}}}"
 response = requests.get("http://localhost:3010/cursor/loginDeepControl", headers={
     "authorization": f"Bearer {WorkosCursorSessionToken}"
 })
@@ -59,6 +70,16 @@ print(cookie)
 ```
 
 ## How to Run
+
+### Environment Setup
+
+After obtaining your Cursor cookie using Method 1 above, your `.env` file will be automatically created/updated with:
+
+```bash
+CURSOR_TOKEN=your_cursor_token_here
+```
+
+You can also manually create a `.env` file in the project root with this format if needed.
 
 ### Run in docker
 
@@ -85,7 +106,7 @@ npm run start
     - Request：`POST`
     - Authentication：`Bearer Token`（The value of `Cursor Cookie`，supports comma-separated values）
 
- for the response body, please refer to the OpenAI interface
+For the response body, please refer to the OpenAI interface
 
 ### Python demo
 
@@ -110,6 +131,8 @@ print(response.choices)
 
 - Please keep your Cursor cookie properly and do not disclose it to others
 - This project is for study and research only, please abide by the Cursor Terms of Use
+- The login tool automatically manages your `.env` file for convenience
+- If you need to update your token, simply run `npm run login` again
 
 ## Acknowledgements
 
