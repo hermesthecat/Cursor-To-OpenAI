@@ -83,12 +83,6 @@ docker build -t cursor-to-openai .
 docker run -d --name cursor-to-openai -p 3010:3010 -v $(pwd)/.env:/app/.env cursor-to-openai
 ```
 
-#### Docker Hub
-
-```bash
-docker run -d --name cursor-to-openai -p 3010:3010 ghcr.io/jiuz-chn/cursor-to-openai:latest
-```
-
 ### 🔧 System Service Installation
 
 #### Linux (systemd)
