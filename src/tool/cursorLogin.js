@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { v4: uuidv4, v5: uuidv5 } = require('uuid');
 
 function generatePkcePair() {
@@ -31,6 +33,36 @@ async function queryAuthPoll(uuid, verifier) {
   return undefined;
 }
 
+function updateEnvFile(token) {
+  const envPath = path.join(process.cwd(), '.env');
+  let envContent = '';
+
+  // Read existing .env file if it exists
+  if (fs.existsSync(envPath)) {
+    envContent = fs.readFileSync(envPath, 'utf8');
+  }
+
+  // Check if CURSOR_TOKEN already exists
+  const tokenRegex = /^CURSOR_TOKEN=.*$/m;
+  const newTokenLine = `CURSOR_TOKEN=${token}`;
+
+  if (tokenRegex.test(envContent)) {
+    // Replace existing CURSOR_TOKEN
+    envContent = envContent.replace(tokenRegex, newTokenLine);
+    console.log("[Log] Updated existing CURSOR_TOKEN in .env file");
+  } else {
+    // Add new CURSOR_TOKEN
+    if (envContent && !envContent.endsWith('\n')) {
+      envContent += '\n';
+    }
+    envContent += newTokenLine + '\n';
+    console.log("[Log] Added CURSOR_TOKEN to .env file");
+  }
+
+  // Write back to .env file
+  fs.writeFileSync(envPath, envContent);
+}
+
 if (require.main === module) {
 
   async function main() {
@@ -58,7 +90,7 @@ if (require.main === module) {
         console.log("[Log] Login successfully. Your Cursor cookie:");
         console.log(token)
         // replace the token in .env file
-        fs.writeFileSync('.env', `CURSOR_TOKEN=${token}`);
+        updateEnvFile(token);
         break;
       }
       await new Promise(resolve => setTimeout(resolve, 5000));
