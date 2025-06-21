@@ -49,6 +49,8 @@ npm run start:windows
 curl http://localhost:3010/v1/models
 ```
 
+![models](models.png)
+
 ## 📋 Deployment Options
 
 ### 🖥️ Local Development
