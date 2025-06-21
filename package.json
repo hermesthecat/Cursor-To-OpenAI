@@ -24,7 +24,9 @@
     "start:windows": "scripts\\start.bat",
     "dev": "npm start",
     "service:install": "sudo bash scripts/service_install.sh",
-    "service:uninstall": "sudo bash scripts/service_uninstall.sh"
+    "service:uninstall": "sudo bash scripts/service_uninstall.sh",
+    "service:install:windows": "powershell -ExecutionPolicy Bypass -File scripts/service_install.ps1",
+    "service:uninstall:windows": "powershell -ExecutionPolicy Bypass -File scripts/service_uninstall.ps1"
   },
   "devDependencies": {
     "protobufjs-cli": "^1.1.3"

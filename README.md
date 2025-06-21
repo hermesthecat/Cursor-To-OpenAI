@@ -10,9 +10,6 @@ This project provides a proxy service that converts the AI chat of the Cursor Ed
 
 Visit [Cursor](https://www.cursor.com) and register a account.
 
-- 150 fast premium requests are given, which can be reset by deleting the account and then registering again
-- Suggest to use gmail/outlook email, some temp emails have been disabled by Cursor.
-
 ### Get Cursor client cookie
 
 The cookie from Cursor webpage does not work in Cursor-To-OpenAI server. You need to get the Cursor client cookie following these steps:
