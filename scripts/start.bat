@@ -6,7 +6,7 @@ echo   Cursor To OpenAI Server Startup
 echo ===================================
 
 REM Check if .env file exists
-if not exist ".env" (
+if not exist "..\.env" (
     echo ⚠️  .env file not found!
     echo 📝 Please run 'npm run login' first to get your Cursor token
     echo    or manually create .env file with CURSOR_TOKEN=your_token
@@ -15,7 +15,7 @@ if not exist ".env" (
 )
 
 REM Check if CURSOR_TOKEN is set in .env
-findstr /C:"CURSOR_TOKEN=" .env >nul
+findstr /C:"CURSOR_TOKEN=" ..\.env >nul
 if errorlevel 1 (
     echo ⚠️  CURSOR_TOKEN not found in .env file!
     echo 📝 Please run 'npm run login' to get your Cursor token
@@ -24,7 +24,7 @@ if errorlevel 1 (
 )
 
 REM Check if CURSOR_TOKEN has a value (basic check)
-for /f "tokens=2 delims==" %%a in ('findstr /C:"CURSOR_TOKEN=" .env') do set TOKEN_VALUE=%%a
+for /f "tokens=2 delims==" %%a in ('findstr /C:"CURSOR_TOKEN=" ..\.env') do set TOKEN_VALUE=%%a
 if "%TOKEN_VALUE%"=="" (
     echo ⚠️  CURSOR_TOKEN is empty in .env file!
     echo 📝 Please run 'npm run login' to get your Cursor token
