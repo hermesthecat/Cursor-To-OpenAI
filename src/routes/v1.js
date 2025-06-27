@@ -122,7 +122,7 @@ router.post('/chat/completions', async (req, res) => {
     const dispatcher = config.proxy.enabled
       ? new ProxyAgent(config.proxy.url, { allowH2: true })
       : new Agent({ allowH2: true });
-    const response = await fetch(`https://${config.cursor_host}/${config.cursor_api_path}/StreamUnifiedChatWithTools`, {
+    const response = await fetch(`https://${config.cursor_host}/${config.cursor_chat_path}/StreamUnifiedChatWithTools`, {
       method: 'POST',
       headers: {
         'authorization': `Bearer ${authToken}`,
@@ -149,7 +149,7 @@ router.post('/chat/completions', async (req, res) => {
         read: 30000
       }
     });
-
+    
     if (response.status !== 200) {
       return res.status(response.status).json({
         error: response.statusText
