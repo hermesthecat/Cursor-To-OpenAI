@@ -96,28 +96,6 @@ router.post('/chat/completions', async (req, res) => {
     const clientKey = generateHashed64Hex(authToken)
     const cursorConfigVersion = uuidv4();
 
-    // Request the AvailableModels before StreamChat.
-    const availableModelsResponse = fetch(`https://${config.cursor_host}/${config.cursor_api_path}/AvailableModels`, {
-      method: 'POST',
-      headers: {
-        'accept-encoding': config.cursor_accept_encoding,
-        'authorization': `Bearer ${authToken}`,
-        'connect-protocol-version': config.cursor_connect_protocol_version,
-        'content-type': config.cursor_content_type,
-        'user-agent': config.cursor_user_agent,
-        'x-amzn-trace-id': `Root=${uuidv4()}`,
-        'x-client-key': clientKey,
-        'x-cursor-checksum': cursorChecksum,
-        'x-cursor-client-version': config.cursor_x_cursor_client_version,
-        'x-cursor-config-version': cursorConfigVersion,
-        'x-cursor-timezone': config.cursor_x_cursor_timezone,
-        'x-ghost-mode': config.cursor_x_ghost_mode,
-        "x-request-id": uuidv4(),
-        "x-session-id": sessionid,
-        'Host': config.cursor_host,
-      },
-    })
-
     const cursorBody = generateCursorBody(messages, model);
     const dispatcher = config.proxy.enabled
       ? new ProxyAgent(config.proxy.url, { allowH2: true })
@@ -149,7 +127,7 @@ router.post('/chat/completions', async (req, res) => {
         read: 30000
       }
     });
-    
+
     if (response.status !== 200) {
       return res.status(response.status).json({
         error: response.statusText
